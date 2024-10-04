@@ -1,12 +1,12 @@
 import {NavigationProp} from '@react-navigation/native';
-import React, {FC, useEffect} from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {FC, useState} from 'react';
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-remix-icon';
 import {toCapitalize} from '../../utils/common';
 import {getPokemonURL, getTypes} from '../../utils/pokemon';
 import PokemonImage from '../../components/molecules/PokemonImage';
-import {getPokemonDescription} from '../../services/pokemon';
 import {fonts} from '../../utils/typography';
+import DetailsModal from '../../components/organism/DetailsModal';
 
 type Props = {
   navigation: NavigationProp<any>;
@@ -16,6 +16,7 @@ type Props = {
 const description = `Spits fire that is hot enough to melt boulders. Known to cause forest fires unintentionally. When expelling a blast of super hot fire, the red flame at the tip of its tail burns more intensely. If CHARIZARD be­comes furious, the flame at the tip of its tail flares up in a whitish-blue color. Breathing intense, hot flames, it can melt almost any­ thing. Its breath inflicts terrible pain on enemies. It uses its wings to fly high. The temperature of its fire increases as it gains exper­\nience in battle. CHARIZARD flies around the sky in search of powerful opponents. It breathes fire of such great heat that it melts anything. However, it never turns its fiery breath on any opponent weaker than itself. Its wings can carry this POKéMON close to an altitude of 4,600 feet. It blows out\nfire at very high temperatures. It is said that CHARIZARD’s fire burns hotter if it has\nexperienced harsh battles.`;
 
 const Details: FC<Props> = ({navigation, route}) => {
+  const [showFullDetails, toggleFullDetails] = useState(false);
   const {params} = route;
   const {data} = params;
   const {name, types, id} = data;
@@ -23,32 +24,41 @@ const Details: FC<Props> = ({navigation, route}) => {
   const _types = getTypes(types);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{toCapitalize(name)}</Text>
-        <TouchableOpacity
-          style={styles.close}
-          onPress={() => navigation.goBack()}>
-          <Icon name="close-line" size="24" color="#2E3156" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.details}>
-        <View style={styles.imageWrapper}>
-          <PokemonImage imageUrl={imageUrl} types={_types} />
+    <>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{toCapitalize(name)}</Text>
+          <TouchableOpacity
+            style={styles.close}
+            onPress={() => navigation.goBack()}>
+            <Icon name="close-line" size="24" color="#2E3156" />
+          </TouchableOpacity>
         </View>
-        <View style={styles.description}>
-          <Text style={styles.descriptionText}>
-            {`${description.substring(0, 300)}...`}
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert(description);
-              }}>
-              <Text style={styles.readMore}>Read More</Text>
-            </TouchableOpacity>
-          </Text>
+        <View style={styles.details}>
+          <View style={styles.imageWrapper}>
+            <PokemonImage imageUrl={imageUrl} types={_types} />
+          </View>
+          <View style={styles.description}>
+            <Text style={styles.descriptionText}>
+              {`${description.substring(0, 200)}...`}
+              <TouchableOpacity
+                onPress={() => {
+                  toggleFullDetails(true);
+                }}>
+                <Text style={styles.readMore}>Read More</Text>
+              </TouchableOpacity>
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+      <DetailsModal
+        visible={showFullDetails}
+        toggleVisible={() => {
+          toggleFullDetails(false);
+        }}>
+        <Text style={styles.fulllDetail}>{description}</Text>
+      </DetailsModal>
+    </>
   );
 };
 
@@ -96,8 +106,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   descriptionText: {
-    color: 'black',
+    color: '#2E3156',
     fontSize: 16,
+    lineHeight: 24,
+  },
+  fulllDetail: {
+    color: 'white',
+    fontSize: 16,
+    lineHeight: 24,
   },
   readMore: {
     fontSize: 16,
