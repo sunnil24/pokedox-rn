@@ -1,0 +1,15 @@
+export default {
+  1: require('../assets/images/1.svg'),
+  2: require('../assets/images/2.svg'),
+  3: require('../assets/images/3.svg'),
+  4: require('../assets/images/4.svg'),
+  5: require('../assets/images/5.svg'),
+  6: require('../assets/images/6.svg'),
+  7: require('../assets/images/7.svg'),
+  8: require('../assets/images/8.svg'),
+  9: require('../assets/images/9.svg'),
+  10: require('../assets/images/10.svg'),
+  //   11: require('../assets/images/11.svg'),
+  //   12: require('../assets/images/12.svg'),
+  //   13: require('../assets/images/13.svg'),
+};
